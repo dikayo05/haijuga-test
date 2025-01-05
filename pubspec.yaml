@@ -40,6 +40,9 @@ dependencies:
   cloudinary_url_gen: ^1.6.0
   image_picker: ^1.1.2
   http: ^1.2.2
+  firebase_auth: ^5.3.4
+  fluttertoast: ^8.2.10
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

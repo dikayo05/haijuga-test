@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/home.dart';
+import 'pages/signin/signin_page.dart';
 
 // firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -17,13 +17,14 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   // CloudinaryObject.fromCloudName(cloudName: 'dwxuluzp6');
-  CloudinaryContext.cloudinary = Cloudinary.fromCloudName(cloudName: 'dwxuluzp6');
+  CloudinaryContext.cloudinary =
+      Cloudinary.fromCloudName(cloudName: 'dwxuluzp6');
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: SigninPage(),
     );
   }
 }

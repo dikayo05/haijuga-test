@@ -1,13 +1,17 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert';
+import 'dart:io';
 
 // cloudinary
 import 'package:cloudinary_flutter/image/cld_image.dart';
+
+// firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/auth_service.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -27,7 +31,7 @@ class _HomeState extends State<Home> {
 
   XFile? _image;
   Map<String, dynamic> users = {};
-  
+
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -197,7 +201,7 @@ class _HomeState extends State<Home> {
                                       onSelected: (String result) async {
                                         if (result == 'edit') {
                                           final TextEditingController
-                                              _editController =
+                                              editController =
                                               TextEditingController(
                                                   text: posts[index]
                                                       ['caption']);
@@ -207,7 +211,7 @@ class _HomeState extends State<Home> {
                                               return AlertDialog(
                                                 title: const Text('Edit Post'),
                                                 content: TextField(
-                                                  controller: _editController,
+                                                  controller: editController,
                                                   decoration: InputDecoration(
                                                     labelText: 'Caption',
                                                     border:
@@ -227,7 +231,7 @@ class _HomeState extends State<Home> {
                                                     onPressed: () async {
                                                       await _editPost(
                                                           posts[index]['id'],
-                                                          _editController.text);
+                                                          editController.text);
                                                       Navigator.of(context)
                                                           .pop();
                                                     },
@@ -300,7 +304,17 @@ class _HomeState extends State<Home> {
                     child: Column(
                   children: [
                     Text('profile'),
-                    CldImageWidget(publicId: 'haijuga-app/cnga2pbepuhczzkv6tcy')
+                    CldImageWidget(
+                        publicId: 'haijuga-app/cnga2pbepuhczzkv6tcy'),
+                    Text(
+                      FirebaseAuth.instance.currentUser!.email.toString(),
+                      style: GoogleFonts.raleway(
+                          textStyle: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20)),
+                    ),
+                    _logout(context)
                   ],
                 )),
               ],
@@ -313,4 +327,21 @@ class _HomeState extends State<Home> {
               ],
             )));
   }
+}
+
+Widget _logout(BuildContext context) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xff0D6EFD),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      minimumSize: const Size(double.infinity, 60),
+      elevation: 0,
+    ),
+    onPressed: () async {
+      await AuthService().signout(context: context);
+    },
+    child: const Text("Sign Out"),
+  );
 }
