@@ -1,5 +1,5 @@
 import '../signin/signin_page.dart';
-import '../../services/auth_service.dart';
+import '../../services/firebase/auth_service.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class SignupPage extends StatelessWidget {
   SignupPage({super.key});
 
+  final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -38,7 +39,9 @@ class SignupPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 80,),
+              const SizedBox(height: 20,),
+               _userName(),
+              const SizedBox(height: 20,),
                _emailAddress(),
                const SizedBox(height: 20,),
                _password(),
@@ -49,6 +52,43 @@ class SignupPage extends StatelessWidget {
 
       ),
       )
+    );
+  }
+
+Widget _userName() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'User Name',
+          style: GoogleFonts.raleway(
+            textStyle: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+              fontSize: 16
+            )
+          ),
+        ),
+        const SizedBox(height: 16,),
+        TextField(
+          controller: _userNameController,
+          decoration: InputDecoration(
+            filled: true,
+            hintText: 'alok saepudin',
+            hintStyle: const TextStyle(
+              color: Color(0xff6A6A6A),
+              fontWeight: FontWeight.normal,
+              fontSize: 14
+            ),
+            fillColor: const Color(0xffF7F7F9) ,
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(14)
+            )
+          ),
+        )
+      ],
     );
   }
 
@@ -133,6 +173,7 @@ class SignupPage extends StatelessWidget {
       ),
       onPressed: () async {
        await AuthService().signup(
+          userName: _userNameController.text,
           email: _emailController.text,
           password: _passwordController.text,
           context: context

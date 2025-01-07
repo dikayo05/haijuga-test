@@ -16,9 +16,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // CloudinaryObject.fromCloudName(cloudName: 'dwxuluzp6');
   CloudinaryContext.cloudinary =
       Cloudinary.fromCloudName(cloudName: 'dwxuluzp6');
+      
   runApp(const MyApp());
 }
 
