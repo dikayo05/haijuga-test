@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
   final _posts = FirebaseFirestore.instance.collection('posts');
-  final _messages = FirebaseFirestore.instance.collection('messages');
   // Map<String, dynamic> _postsMap = {};
 
-// POSTS
 // create post
   Future<void> addPost(String userId, String caption, String media) {
     return _posts.add({
@@ -44,15 +42,5 @@ class FirestoreService {
   // delete post
   Future<void> deletePost(String id) {
     return _posts.doc(id).delete();
-  }
-
-// MESSAGES
-// create message
-  Future<void> addMessage(String userId, String message) {
-    return _messages.add({
-      'user_id': userId,
-      'message': message,
-      'created_at': DateTime.now(),
-    });
   }
 }
