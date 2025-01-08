@@ -4,7 +4,7 @@ import 'view/add_post_view.dart';
 import 'view/profile_view.dart';
 import 'view/message_view.dart';
 
-import '../../services/firebase/firestore_service.dart';
+import '../../services/firebase/post_service.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -14,7 +14,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final firestoreService = FirestoreService();
+  final PostService firestoreService = PostService();
   final ScrollController _scrollController = ScrollController();
 
   Map<String, dynamic> users = {};

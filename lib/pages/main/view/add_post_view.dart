@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../services/firebase/firestore_service.dart';
+import '../../../services/firebase/post_service.dart';
 
 class AddPostView extends StatefulWidget {
   const AddPostView({super.key});
@@ -15,10 +15,10 @@ class AddPostView extends StatefulWidget {
 }
 
 class _AddPostViewState extends State<AddPostView> {
-  final FirestoreService firestoreService = FirestoreService();
+  final PostService firestoreService = PostService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final TextEditingController _captionController = TextEditingController();
-  String _mediaUrl = '';
+  String? _mediaUrl;
   XFile? _image;
   bool isLoading = false;
 
@@ -44,13 +44,20 @@ class _AddPostViewState extends State<AddPostView> {
     }
   }
 
-  Future<void> _handleUploadImage() async {
+  Future<void> _handleUploadPost() async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      await _uploadImage(); // Jalankan upload
+      if (_image != null) {
+        await _uploadImage();
+      } else {
+        _mediaUrl = '';
+      }
+      firestoreService.addPost(
+          _firebaseAuth.currentUser!.uid, _captionController.text, _mediaUrl!);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Upload berhasil!')),
       );
@@ -61,6 +68,8 @@ class _AddPostViewState extends State<AddPostView> {
     } finally {
       setState(() {
         isLoading = false;
+        _image = null;
+        _captionController.clear();
       });
     }
   }
@@ -86,7 +95,7 @@ class _AddPostViewState extends State<AddPostView> {
       ),
       _image == null
           ? const Text('No image selected.')
-          : Image.file(File(_image!.path)),
+          : Image.file(width: 200, height: 200, File(_image!.path)),
       ElevatedButton(
         onPressed: _pickImage,
         child: const Text('Pick Image from Gallery'),
@@ -95,11 +104,7 @@ class _AddPostViewState extends State<AddPostView> {
           ? const CircularProgressIndicator()
           : FloatingActionButton(
               onPressed: () async {
-                await _handleUploadImage();
-                firestoreService.addPost(
-                    _firebaseAuth.currentUser!.uid, _captionController.text, _mediaUrl);
-                    _image = null;
-                    _captionController.clear();
+                _handleUploadPost();
               },
               child: Text('posting')),
     ]);

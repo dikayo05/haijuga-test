@@ -165,7 +165,7 @@ class SigninPage extends StatelessWidget {
                     fontSize: 16
                   ),
                   recognizer: TapGestureRecognizer()..onTap = () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SignupPage()

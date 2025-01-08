@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirestoreService {
+class PostService {
   final _posts = FirebaseFirestore.instance.collection('posts');
   // Map<String, dynamic> _postsMap = {};
 
@@ -25,18 +25,23 @@ class FirestoreService {
   }
 
 // dari dokementasi
-  Future<void> fetchData() async {
-    await _posts.get().then((event) {
-      for (var doc in event.docs) {
-        // _postsMap['docId'] = doc.id;
-        // print("${doc.id} => ${doc.data()}");
-      }
-    });
-  }
+  // Future<void> fetchData() async {
+  //   await _posts.get().then((event) {
+  //     for (var doc in event.docs) {
+  //       // _postsMap['docId'] = doc.id;
+  //       // print("${doc.id} => ${doc.data()}");
+  //     }
+  //   });
+  // }
 
   // update post
-  Future<void> updatePost(String id, String caption) {
-    return _posts.doc(id).update({'caption': caption});
+  Future<void> updatePost(String id, String caption, String media) {
+    return _posts.doc(id).update({'caption': caption, 'media': media});
+  }
+
+  // add like
+  Future<void> addLike(String id) {
+    return _posts.doc(id).update({'like': FieldValue.increment(1)});
   }
 
   // delete post

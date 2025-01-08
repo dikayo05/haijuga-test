@@ -112,7 +112,7 @@ Widget _userName() {
           controller: _emailController,
           decoration: InputDecoration(
             filled: true,
-            hintText: 'mahdiforwork@gmail.com',
+            hintText: 'alok123@gmail.com',
             hintStyle: const TextStyle(
               color: Color(0xff6A6A6A),
               fontWeight: FontWeight.normal,
@@ -206,7 +206,7 @@ Widget _userName() {
                     fontSize: 16
                   ),
                   recognizer: TapGestureRecognizer()..onTap = () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SigninPage()

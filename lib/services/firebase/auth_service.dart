@@ -5,10 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../pages/main/main_page.dart';
 import '../../pages/signin/signin_page.dart';
+import '../firebase/user_service.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final UserService _userService = UserService();
 
   Future<void> signup(
       {required String userName,
@@ -19,12 +21,7 @@ class AuthService {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      await _firestore.collection('users').doc(userCredential.user!.uid).set({
-        'uid': userCredential.user!.uid,
-        'user_name': userName,
-        'email': email,
-        'profile_picture': '',
-      });
+      await _userService.add(userCredential.user!.uid, userName, email);
 
       Navigator.pushReplacement(
           context,
