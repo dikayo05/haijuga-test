@@ -41,7 +41,7 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Future<String> _getUserName(String userId) async {
+  Future<void> _getUserName(String userId) async {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return userDoc['user_name'];
   }
@@ -136,14 +136,13 @@ class _HomeViewState extends State<HomeView> {
                   String docId = documen.id;
                   Map<String, dynamic> post =
                       documen.data() as Map<String, dynamic>;
-                  // String userName = post['user_name']; // Assuming user_name is part of the post data
                   // card post
                   return Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('sdklfj'),
+                          Text(post['user_id']),
                           menuPopup(docId, post['caption'], post['media'])
                         ],
                       ),

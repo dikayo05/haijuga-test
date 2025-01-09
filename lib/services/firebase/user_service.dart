@@ -9,7 +9,7 @@ class UserService {
       'user_id': uid,
       'user_name': userName,
       'email': email,
-      'porfile_picture': 'https://console.cloudinary.com/pm/c-cc816cdb2e22be567c096f44abde39/media-explorer/haijuga-media?assetId=103b88c89b2a7ef8c2ce42bb713cbe0cc',
+      'profile_picture': '',
       'created_at': DateTime.now(),
     });
   }
