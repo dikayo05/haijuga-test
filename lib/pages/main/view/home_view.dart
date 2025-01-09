@@ -147,12 +147,11 @@ class _HomeViewState extends State<HomeView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Text(post['user_id']),
-                          Text(FirebaseAuth.instance.currentUser!.email
-                              .toString()),
+                          Text("  ${FirebaseAuth.instance.currentUser!.email}"),
                           menuPopup(docId, post['caption'], post['media'])
                         ],
                       ),
-                      Text(post['caption']),
+                      Text("  ${post['caption']}"),
                       post['media'] != ''
                           ? Image.network(post['media'])
                           : const SizedBox(),
