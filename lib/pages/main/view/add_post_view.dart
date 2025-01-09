@@ -82,31 +82,65 @@ class _AddPostViewState extends State<AddPostView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextField(
-          controller: _captionController,
-          decoration: InputDecoration(
-            labelText: 'Caption',
-            border: OutlineInputBorder(),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextField(
+            controller: _captionController,
+            decoration: InputDecoration(
+              labelText: 'Caption',
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            ),
+            maxLines: 3,
           ),
-        ),
+          SizedBox(height: 20),
+          _image == null
+              ? Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(child: Text('No image selected.')),
+                )
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.file(
+                    File(_image!.path),
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton.icon(
+                onPressed: _pickImage,
+                icon: Icon(Icons.photo_library),
+                label: Text('Pick Image'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                ),
+              ),
+              isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _handleUploadPost,
+                      child: Text('Post'),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      ),
+                    ),
+            ],
+          ),
+        ],
       ),
-      _image == null
-          ? const Text('No image selected.')
-          : Image.file(width: 200, height: 200, File(_image!.path)),
-      ElevatedButton(
-        onPressed: _pickImage,
-        child: const Text('Pick Image from Gallery'),
-      ),
-      isLoading
-          ? const CircularProgressIndicator()
-          : FloatingActionButton(
-              onPressed: () async {
-                _handleUploadPost();
-              },
-              child: Text('posting')),
-    ]);
+    );
   }
 }

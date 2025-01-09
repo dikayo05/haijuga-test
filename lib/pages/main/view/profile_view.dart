@@ -41,7 +41,8 @@ class _ProfileViewState extends State<ProfileView> {
             child: ClipOval(
                 child: profilePictureUrl.isNotEmpty
                     ? Image.network(width: 100, height: 100, profilePictureUrl)
-                    : CircularProgressIndicator())),
+                    : Image.asset(
+                        width: 100, height: 100, 'assets/images/avatar.png'))),
         Text(
           FirebaseAuth.instance.currentUser!.email.toString(),
           style: GoogleFonts.raleway(

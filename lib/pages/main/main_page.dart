@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 4,
+        length: 3,
         child: Scaffold(
             appBar: AppBar(
               title: const Text('haijuga'),
@@ -55,7 +55,7 @@ class _MainPageState extends State<MainPage> {
                 // home view
                 HomeView(),
                 // message view
-                MessageView(),
+                // MessageView(),
                 // add post view
                 AddPostView(),
                 // profile view
@@ -65,7 +65,7 @@ class _MainPageState extends State<MainPage> {
             bottomNavigationBar: const TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(Icons.message)),
+                // Tab(icon: Icon(Icons.message)),
                 Tab(icon: Icon(Icons.add)),
                 Tab(icon: Icon(Icons.person))
               ],

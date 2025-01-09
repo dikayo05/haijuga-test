@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,7 +43,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _getUserName(String userId) async {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return userDoc['user_name'];
   }
 
@@ -113,10 +115,10 @@ class _HomeViewState extends State<HomeView> {
             value: 'delete',
             child: Text('Hapus'),
           ),
-          PopupMenuItem(
-            value: 'report',
-            child: Text('Laporkan'),
-          ),
+          // PopupMenuItem(
+          //   value: 'report',
+          //   child: Text('Laporkan'),
+          // ),
         ];
       },
     );
@@ -138,11 +140,15 @@ class _HomeViewState extends State<HomeView> {
                       documen.data() as Map<String, dynamic>;
                   // card post
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(post['user_id']),
+                          // Text(post['user_id']),
+                          Text(FirebaseAuth.instance.currentUser!.email
+                              .toString()),
                           menuPopup(docId, post['caption'], post['media'])
                         ],
                       ),
@@ -155,9 +161,10 @@ class _HomeViewState extends State<HomeView> {
                         children: [
                           Column(
                             children: [
-                              Text(post['like'].toString()), // Display number of likes
+                              Text(post['like']
+                                  .toString()), // Display number of likes
                               IconButton(
-                                icon: Icon(Icons.thumb_up),
+                                icon: Icon(Icons.waving_hand),
                                 onPressed: () {
                                   // Add like functionality here
                                   _postService.addLike(docId);
@@ -165,28 +172,28 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             ],
                           ),
-                          Column(
-                            children: [
-                              Text(post['comment'].toString()), // Display number of comments
-                              IconButton(
-                                icon: Icon(Icons.comment),
-                                onPressed: () {
-                                  // Add comment functionality here
-                                },
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(post['share'].toString()), // Display number of shares
-                              IconButton(
-                                icon: Icon(Icons.share),
-                                onPressed: () {
-                                  // Add share functionality here
-                                },
-                              ),
-                            ],
-                          ),
+                          // Column(
+                          //   children: [
+                          //     Text(post['comment'].toString()), // Display number of comments
+                          //     IconButton(
+                          //       icon: Icon(Icons.comment),
+                          //       onPressed: () {
+                          //         // Add comment functionality here
+                          //       },
+                          //     ),
+                          //   ],
+                          // ),
+                          // Column(
+                          //   children: [
+                          //     Text(post['share'].toString()), // Display number of shares
+                          //     IconButton(
+                          //       icon: Icon(Icons.share),
+                          //       onPressed: () {
+                          //         // Add share functionality here
+                          //       },
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ],
