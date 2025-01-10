@@ -5,9 +5,10 @@ class PostService {
   // Map<String, dynamic> _postsMap = {};
 
 // create post
-  Future<void> addPost(String userId, String caption, String media) {
+  Future<void> addPost(String userId, String userEmail, String caption, String media) {
     return _posts.add({
       'user_id': userId,
+      'user_name': userEmail,
       'caption': caption,
       'media': media,
       'like': 0,

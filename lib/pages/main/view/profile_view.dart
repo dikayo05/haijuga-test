@@ -67,21 +67,21 @@ class _ProfileViewState extends State<ProfileView> {
         ),
         ListTile(
           title: Text('Full Name: $fullName'),
-          trailing: Icon(Icons.edit),
+          // trailing: Icon(Icons.edit),
           onTap: () {
             // Navigate to edit full name screen
           },
         ),
         ListTile(
           title: Text('Date of Birth: $dateOfBirth'),
-          trailing: Icon(Icons.edit),
+          // trailing: Icon(Icons.edit),
           onTap: () {
             // Navigate to edit date of birth screen
           },
         ),
         ListTile(
           title: Text('Gender: $gender'),
-          trailing: Icon(Icons.edit),
+          // trailing: Icon(Icons.edit),
           onTap: () {
             // Navigate to edit gender screen
           },

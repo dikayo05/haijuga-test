@@ -10,6 +10,8 @@ class SignupPage extends StatelessWidget {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
+  String _selectedGender = 'Male';
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,10 @@ class SignupPage extends StatelessWidget {
                _emailAddress(),
                const SizedBox(height: 20,),
                _password(),
+               const SizedBox(height: 20,),
+               _birthDate(context),
+               const SizedBox(height: 20,),
+               _gender(),
                const SizedBox(height: 50,),
                _signup(context),
             ],
@@ -161,6 +167,95 @@ Widget _fullName() {
     );
   }
 
+  Widget _birthDate(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Birth Date',
+          style: GoogleFonts.raleway(
+            textStyle: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+              fontSize: 16
+            )
+          ),
+        ),
+        const SizedBox(height: 16,),
+        TextField(
+          controller: _birthDateController,
+          readOnly: true,
+          decoration: InputDecoration(
+            filled: true,
+            hintText: 'Select your birth date',
+            hintStyle: const TextStyle(
+              color: Color(0xff6A6A6A),
+              fontWeight: FontWeight.normal,
+              fontSize: 14
+            ),
+            fillColor: const Color(0xffF7F7F9),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(14)
+            )
+          ),
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (pickedDate != null) {
+              _birthDateController.text = "${pickedDate.toLocal()}".split(' ')[0];
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _gender() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Gender',
+          style: GoogleFonts.raleway(
+            textStyle: const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+              fontSize: 16
+            )
+          ),
+        ),
+        const SizedBox(height: 16,),
+        DropdownButtonFormField<String>(
+          value: _selectedGender,
+          items: ['Male', 'Female', 'Other'].map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (newValue) {
+            _selectedGender = newValue!;
+          },
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: const Color(0xffF7F7F9),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(14)
+            )
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _signup(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -176,7 +271,9 @@ Widget _fullName() {
           userName: _fullNameController.text,
           email: _emailController.text,
           password: _passwordController.text,
-          context: context
+          context: context,
+          birthDate: _birthDateController.text,
+          gender: _selectedGender,
         );
       },
       child: const Text("Sign Up"),

@@ -17,6 +17,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final PostService _postService = PostService();
+  final _users = FirebaseFirestore.instance.collection('users');
   String? _mediaUrl = '';
   XFile? _image;
 
@@ -96,7 +97,8 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget menuPopup(String docId, String currentCaption, String currentMedia, String postUserId) {
+  Widget menuPopup(String docId, String currentCaption, String currentMedia,
+      String postUserId) {
     return PopupMenuButton<String>(
       onSelected: (String value) {
         if (value == 'edit') {
@@ -143,14 +145,14 @@ class _HomeViewState extends State<HomeView> {
                   // card post
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Text(post['user_id']),
-                          Text("  ${FirebaseAuth.instance.currentUser!.email}"),
-                          menuPopup(docId, post['caption'], post['media'], post['user_id'])
+                          Text("  ${post['user_name']}"),
+                          menuPopup(docId, post['caption'], post['media'],
+                              post['user_id'])
                         ],
                       ),
                       Text("  ${post['caption']}"),

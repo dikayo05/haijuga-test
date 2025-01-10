@@ -16,12 +16,14 @@ class AuthService {
       {required String userName,
       required String email,
       required String password,
-      required BuildContext context}) async {
+      required BuildContext context,
+      required String birthDate,
+      required String gender}) async {
     try {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      await _userService.add(userCredential.user!.uid, userName, email);
+      await _userService.add(userCredential.user!.uid, userName, email, birthDate, gender);
 
       Navigator.pushReplacement(
           context,

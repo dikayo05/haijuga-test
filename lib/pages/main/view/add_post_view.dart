@@ -56,7 +56,7 @@ class _AddPostViewState extends State<AddPostView> {
         _mediaUrl = '';
       }
       firestoreService.addPost(
-          _firebaseAuth.currentUser!.uid, _captionController.text, _mediaUrl!);
+          _firebaseAuth.currentUser!.uid, _firebaseAuth.currentUser!.email.toString(), _captionController.text, _mediaUrl!);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Upload berhasil!')),
