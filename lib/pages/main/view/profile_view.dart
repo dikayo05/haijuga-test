@@ -95,22 +95,22 @@ class _ProfileViewState extends State<ProfileView> {
               child: const Text("Sign Out"),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PostPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              child: const Text("View My Posts"),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => PostPage()),
+            //     );
+            //   },
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Colors.blueAccent,
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(14),
+            //     ),
+            //     minimumSize: const Size(double.infinity, 50),
+            //   ),
+            //   child: const Text("View My Posts"),
+            // ),
           ],
         ),
       ),

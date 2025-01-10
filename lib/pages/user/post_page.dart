@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../services/firebase/post_service.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -10,40 +16,211 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final userId = FirebaseAuth.instance.currentUser!.uid;
+  final PostService _postService = PostService();
+  final _users = FirebaseFirestore.instance.collection('users');
+  String? _mediaUrl = '';
+  XFile? _image;
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future<void> _uploadImage() async {
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dwxuluzp6/upload');
+    final request = http.MultipartRequest('POST', url)
+      ..fields['upload_preset'] = 'haijuga-app'
+      ..files.add(await http.MultipartFile.fromPath('file', _image!.path));
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      final responseData = await response.stream.toBytes();
+      final responseString = String.fromCharCodes(responseData);
+      final jsonMap = jsonDecode(responseString);
+      _mediaUrl = jsonMap['url'];
+    }
+  }
+
+  Future<void> _getUserName(String userId) async {
+    DocumentSnapshot userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc['user_name'];
+  }
+
+  void _showEditDialog(
+      String docId, String currentCaption, String currentMedia) {
+    TextEditingController captionController =
+        TextEditingController(text: currentCaption);
+    TextEditingController mediaController =
+        TextEditingController(text: currentMedia);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit Post'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: captionController,
+                decoration: InputDecoration(hintText: "Enter new caption"),
+              ),
+              _image == null
+                  ? const Text('No image selected.')
+                  : Image.file(width: 150, height: 150, File(_image!.path)),
+              ElevatedButton(
+                  onPressed: _pickImage,
+                  child: const Text('Pick Image from Gallery')),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Save'),
+              onPressed: () {
+                _postService.updatePost(
+                    docId, captionController.text, _mediaUrl!);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget menuPopup(String docId, String currentCaption, String currentMedia,
+      String postUserId) {
+    return PopupMenuButton<String>(
+      onSelected: (String value) {
+        if (value == 'edit') {
+          _showEditDialog(docId, currentCaption, currentMedia);
+        } else if (value == 'delete') {
+          _postService.deletePost(docId);
+        }
+      },
+      itemBuilder: (BuildContext context) {
+        return [
+          if (FirebaseAuth.instance.currentUser!.uid == postUserId)
+            PopupMenuItem(
+              value: 'edit',
+              child: Text('Edit'),
+            ),
+          if (FirebaseAuth.instance.currentUser!.uid == postUserId)
+            PopupMenuItem(
+              value: 'delete',
+              child: Text('Hapus'),
+            ),
+          PopupMenuItem(
+            value: 'report',
+            child: Text('Laporkan'),
+          ),
+        ];
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Posts'),
-        backgroundColor: Colors.blueAccent,
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('posts')
-            .where('user_id', isEqualTo: userId)
-            .snapshots(),
+    return StreamBuilder<QuerySnapshot>(
+        stream: _postService.getPostsStream(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+          if (snapshot.hasData) {
+            List postsList = snapshot.data!.docs;
+            return ListView.builder(
+                itemCount: postsList.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot documen = postsList[index];
+                  String docId = documen.id;
+                  Map<String, dynamic> post =
+                      documen.data() as Map<String, dynamic>;
+                  // card post
+                  return postCardWidget(post, docId);
+                });
+          } else {
+            return Text('hah kosong');
           }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No posts found.'));
-          }
-          final posts = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
-              return ListTile(
-                title: Text(post['user_name']),
-                subtitle: Text(post['caption']),
-              );
-            },
-          );
-        },
-      ),
-    );
+        });
+  }
+
+  Column postCardWidget(Map<String, dynamic> post, String docId) {
+    return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10), // Add spacing between posts
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey), // Add border to the post card
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Text(post['user_id']),
+                              Text("  ${post['user_name']}"),
+                              menuPopup(docId, post['caption'], post['media'],
+                                  post['user_id'])
+                            ],
+                          ),
+                          Text("  ${post['caption']}"),
+                          post['media'] != ''
+                              ? Image.network(post['media'])
+                              : const SizedBox(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(post['like']
+                                      .toString()), // Display number of likes
+                                  IconButton(
+                                    icon: Icon(Icons.thumb_up),
+                                    onPressed: () {
+                                      // Add like functionality here
+                                      _postService.addLike(docId);
+                                    },
+                                  ),
+                                ],
+                              ),
+                              // Column(
+                              //   children: [
+                              //     Text(post['comment'].toString()), // Display number of comments
+                              //     IconButton(
+                              //       icon: Icon(Icons.comment),
+                              //       onPressed: () {
+                              //         // Add comment functionality here
+                              //       },
+                              //     ),
+                              //   ],
+                              // ),
+                              // Column(
+                              //   children: [
+                              //     Text(post['share'].toString()), // Display number of shares
+                              //     IconButton(
+                              //       icon: Icon(Icons.share),
+                              //       onPressed: () {
+                              //         // Add share functionality here
+                              //       },
+                              //     ),
+                              //   ],
+                              // ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
   }
 }
