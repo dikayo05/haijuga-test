@@ -96,7 +96,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget menuPopup(String docId, String currentCaption, String currentMedia) {
+  Widget menuPopup(String docId, String currentCaption, String currentMedia, String postUserId) {
     return PopupMenuButton<String>(
       onSelected: (String value) {
         if (value == 'edit') {
@@ -107,18 +107,20 @@ class _HomeViewState extends State<HomeView> {
       },
       itemBuilder: (BuildContext context) {
         return [
+          if (FirebaseAuth.instance.currentUser!.uid == postUserId)
+            PopupMenuItem(
+              value: 'edit',
+              child: Text('Edit'),
+            ),
+          if (FirebaseAuth.instance.currentUser!.uid == postUserId)
+            PopupMenuItem(
+              value: 'delete',
+              child: Text('Hapus'),
+            ),
           PopupMenuItem(
-            value: 'edit',
-            child: Text('Edit'),
+            value: 'report',
+            child: Text('Laporkan'),
           ),
-          PopupMenuItem(
-            value: 'delete',
-            child: Text('Hapus'),
-          ),
-          // PopupMenuItem(
-          //   value: 'report',
-          //   child: Text('Laporkan'),
-          // ),
         ];
       },
     );
@@ -148,7 +150,7 @@ class _HomeViewState extends State<HomeView> {
                         children: [
                           // Text(post['user_id']),
                           Text("  ${FirebaseAuth.instance.currentUser!.email}"),
-                          menuPopup(docId, post['caption'], post['media'])
+                          menuPopup(docId, post['caption'], post['media'], post['user_id'])
                         ],
                       ),
                       Text("  ${post['caption']}"),
