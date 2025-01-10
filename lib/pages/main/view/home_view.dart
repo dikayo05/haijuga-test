@@ -207,10 +207,10 @@ class _HomeViewState extends State<HomeView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 10), // Add spacing between posts
+                      margin: const EdgeInsets.symmetric(vertical: 5), // Add spacing between posts
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey), // Add border to the post card
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,7 +219,10 @@ class _HomeViewState extends State<HomeView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // Text(post['user_id']),
-                              Text("  ${post['user_name']}"),
+                              Text(
+                                "  ${post['user_name']}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                               menuPopup(docId, post['caption'], post['media'],
                                   post['user_id'])
                             ],
