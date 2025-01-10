@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../services/firebase/auth_service.dart';
+import '../../user/post_page.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -92,6 +93,23 @@ class _ProfileViewState extends State<ProfileView> {
                 minimumSize: const Size(double.infinity, 50),
               ),
               child: const Text("Sign Out"),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PostPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: const Text("View My Posts"),
             ),
           ],
         ),

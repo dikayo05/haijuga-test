@@ -176,7 +176,7 @@ class _HomeViewState extends State<HomeView> {
                                     Text(post['like']
                                         .toString()), // Display number of likes
                                     IconButton(
-                                      icon: Icon(Icons.waving_hand),
+                                      icon: Icon(Icons.thumb_up),
                                       onPressed: () {
                                         // Add like functionality here
                                         _postService.addLike(docId);
