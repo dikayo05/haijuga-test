@@ -146,58 +146,70 @@ class _HomeViewState extends State<HomeView> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // Text(post['user_id']),
-                          Text("  ${post['user_name']}"),
-                          menuPopup(docId, post['caption'], post['media'],
-                              post['user_id'])
-                        ],
-                      ),
-                      Text("  ${post['caption']}"),
-                      post['media'] != ''
-                          ? Image.network(post['media'])
-                          : const SizedBox(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            children: [
-                              Text(post['like']
-                                  .toString()), // Display number of likes
-                              IconButton(
-                                icon: Icon(Icons.waving_hand),
-                                onPressed: () {
-                                  // Add like functionality here
-                                  _postService.addLike(docId);
-                                },
-                              ),
-                            ],
-                          ),
-                          // Column(
-                          //   children: [
-                          //     Text(post['comment'].toString()), // Display number of comments
-                          //     IconButton(
-                          //       icon: Icon(Icons.comment),
-                          //       onPressed: () {
-                          //         // Add comment functionality here
-                          //       },
-                          //     ),
-                          //   ],
-                          // ),
-                          // Column(
-                          //   children: [
-                          //     Text(post['share'].toString()), // Display number of shares
-                          //     IconButton(
-                          //       icon: Icon(Icons.share),
-                          //       onPressed: () {
-                          //         // Add share functionality here
-                          //       },
-                          //     ),
-                          //   ],
-                          // ),
-                        ],
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 10), // Add spacing between posts
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey), // Add border to the post card
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Text(post['user_id']),
+                                Text("  ${post['user_name']}"),
+                                menuPopup(docId, post['caption'], post['media'],
+                                    post['user_id'])
+                              ],
+                            ),
+                            Text("  ${post['caption']}"),
+                            post['media'] != ''
+                                ? Image.network(post['media'])
+                                : const SizedBox(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(post['like']
+                                        .toString()), // Display number of likes
+                                    IconButton(
+                                      icon: Icon(Icons.waving_hand),
+                                      onPressed: () {
+                                        // Add like functionality here
+                                        _postService.addLike(docId);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                // Column(
+                                //   children: [
+                                //     Text(post['comment'].toString()), // Display number of comments
+                                //     IconButton(
+                                //       icon: Icon(Icons.comment),
+                                //       onPressed: () {
+                                //         // Add comment functionality here
+                                //       },
+                                //     ),
+                                //   ],
+                                // ),
+                                // Column(
+                                //   children: [
+                                //     Text(post['share'].toString()), // Display number of shares
+                                //     IconButton(
+                                //       icon: Icon(Icons.share),
+                                //       onPressed: () {
+                                //         // Add share functionality here
+                                //       },
+                                //     ),
+                                //   ],
+                                // ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   );

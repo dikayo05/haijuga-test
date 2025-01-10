@@ -47,52 +47,75 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile', style: GoogleFonts.raleway(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-      children: [
-        Text('profile'),
-        Center(
-            child: ClipOval(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: ClipOval(
                 child: profilePictureUrl.isNotEmpty
-                    ? Image.network(width: 100, height: 100, profilePictureUrl)
-                    : Image.asset(
-                        width: 100, height: 100, 'assets/images/avatar.png'))),
-        Text(
-          FirebaseAuth.instance.currentUser!.email.toString(),
-          style: GoogleFonts.raleway(
-              textStyle: const TextStyle(
+                    ? Image.network(profilePictureUrl, width: 100, height: 100, fit: BoxFit.cover)
+                    : Image.asset('assets/images/avatar.png', width: 100, height: 100, fit: BoxFit.cover),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              FirebaseAuth.instance.currentUser!.email.toString(),
+              style: GoogleFonts.raleway(
+                textStyle: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20)),
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildProfileInfo('Full Name', fullName),
+            _buildProfileInfo('Date of Birth', dateOfBirth),
+            _buildProfileInfo('Gender', gender),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                await AuthService().signout(context: context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: const Text("Sign Out"),
+            ),
+          ],
         ),
-        ListTile(
-          title: Text('Full Name: $fullName'),
-          // trailing: Icon(Icons.edit),
-          onTap: () {
-            // Navigate to edit full name screen
-          },
+      ),
+    );
+  }
+
+  Widget _buildProfileInfo(String title, String value) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+      title: Text(
+        '$title: $value',
+        style: GoogleFonts.raleway(
+          textStyle: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+            fontSize: 16,
+          ),
         ),
-        ListTile(
-          title: Text('Date of Birth: $dateOfBirth'),
-          // trailing: Icon(Icons.edit),
-          onTap: () {
-            // Navigate to edit date of birth screen
-          },
-        ),
-        ListTile(
-          title: Text('Gender: $gender'),
-          // trailing: Icon(Icons.edit),
-          onTap: () {
-            // Navigate to edit gender screen
-          },
-        ),
-        ElevatedButton(
-          onPressed: () async {
-            await AuthService().signout(context: context);
-          },
-          child: const Text("Sign Out"),
-        )
-      ],
-    ));
+      ),
+      // trailing: Icon(Icons.edit, color: Colors.blueAccent),
+      onTap: () {
+        // Navigate to edit screen
+      },
+    );
   }
 }
