@@ -17,9 +17,28 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final PostService _postService = PostService();
-  final _users = FirebaseFirestore.instance.collection('users');
+  final _firestorePosts = FirebaseFirestore.instance.collection('posts');
   String? _mediaUrl = '';
   XFile? _image;
+  final ScrollController _scrollController = ScrollController();
+  List<DocumentSnapshot> _postsList = [];
+  bool _isLoading = false;
+  bool _hasMore = true;
+  int _documentLimit = 5;
+  DocumentSnapshot? _lastDocument;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+    _getPosts();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -47,6 +66,44 @@ class _HomeViewState extends State<HomeView> {
     DocumentSnapshot userDoc =
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     return userDoc['user_name'];
+  }
+
+  Future<void> _getPosts() async {
+    if (_isLoading) return;
+    setState(() {
+      _isLoading = true;
+    });
+
+    QuerySnapshot querySnapshot;
+    if (_lastDocument == null) {
+      querySnapshot = await _firestorePosts.orderBy('created_at', descending: true)
+          .limit(_documentLimit)
+          .get();
+    } else {
+      querySnapshot = await _firestorePosts.orderBy('created_at', descending: true)
+          .startAfterDocument(_lastDocument!)
+          .limit(_documentLimit)
+          .get();
+    }
+
+    if (querySnapshot.docs.length < _documentLimit) {
+      _hasMore = false;
+    }
+
+    if (querySnapshot.docs.isNotEmpty) {
+      _lastDocument = querySnapshot.docs.last;
+      _postsList.addAll(querySnapshot.docs);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      _getPosts();
+    }
   }
 
   void _showEditDialog(
@@ -130,25 +187,19 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: _postService.getPostsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List postsList = snapshot.data!.docs;
-            return ListView.builder(
-                itemCount: postsList.length,
-                itemBuilder: (context, index) {
-                  DocumentSnapshot documen = postsList[index];
-                  String docId = documen.id;
-                  Map<String, dynamic> post =
-                      documen.data() as Map<String, dynamic>;
-                  // card post
-                  return postCardWidget(post, docId);
-                });
-          } else {
-            return Text('hah kosong');
-          }
-        });
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _postsList.length + (_hasMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == _postsList.length) {
+          return Center(child: CircularProgressIndicator());
+        }
+        DocumentSnapshot document = _postsList[index];
+        String docId = document.id;
+        Map<String, dynamic> post = document.data() as Map<String, dynamic>;
+        return postCardWidget(post, docId);
+      },
+    );
   }
 
   Column postCardWidget(Map<String, dynamic> post, String docId) {
@@ -185,7 +236,7 @@ class _HomeViewState extends State<HomeView> {
                                   Text(post['like']
                                       .toString()), // Display number of likes
                                   IconButton(
-                                    icon: Icon(Icons.thumb_up),
+                                    icon: Icon(Icons.waving_hand),
                                     onPressed: () {
                                       // Add like functionality here
                                       _postService.addLike(docId);
