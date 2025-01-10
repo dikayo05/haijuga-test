@@ -29,7 +29,7 @@ class SigninPage extends StatelessWidget {
             children: [
               Center(
                 child: Text(
-                  'Hello Again',
+                  'Login',
                   style: GoogleFonts.raleway(
                     textStyle: const TextStyle(
                       color: Colors.black,
@@ -72,7 +72,7 @@ class SigninPage extends StatelessWidget {
           controller: _emailController,
           decoration: InputDecoration(
             filled: true,
-            hintText: 'mahdiforwork@gmail.com',
+            // hintText: 'example: alok@gmail.com',
             hintStyle: const TextStyle(
               color: Color(0xff6A6A6A),
               fontWeight: FontWeight.normal,

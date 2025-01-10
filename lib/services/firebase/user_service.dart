@@ -4,11 +4,13 @@ class UserService {
   final _users = FirebaseFirestore.instance.collection('users');
 
 // create user
-  Future<void> add(String uid, String userName, String email) {
+  Future<void> add(String uid, String fullName, String email) {
     return _users.doc(uid).set({
       'user_id': uid,
-      'user_name': userName,
+      'full_name': fullName,
       'email': email,
+      'date_of_birth': '',
+      'gender': '',
       'profile_picture': '',
       'created_at': DateTime.now(),
     });

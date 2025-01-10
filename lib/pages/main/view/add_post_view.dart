@@ -132,10 +132,10 @@ class _AddPostViewState extends State<AddPostView> {
                   ? CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: _handleUploadPost,
-                      child: Text('Post'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       ),
+                      child: Text('Post'),
                     ),
             ],
           ),

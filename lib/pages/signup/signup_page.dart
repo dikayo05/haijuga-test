@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class SignupPage extends StatelessWidget {
   SignupPage({super.key});
 
-  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -40,7 +40,7 @@ class SignupPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20,),
-               _userName(),
+               _fullName(),
               const SizedBox(height: 20,),
                _emailAddress(),
                const SizedBox(height: 20,),
@@ -55,13 +55,13 @@ class SignupPage extends StatelessWidget {
     );
   }
 
-Widget _userName() {
+Widget _fullName() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'User Name',
+          'Full Name',
           style: GoogleFonts.raleway(
             textStyle: const TextStyle(
               color: Colors.black,
@@ -72,10 +72,10 @@ Widget _userName() {
         ),
         const SizedBox(height: 16,),
         TextField(
-          controller: _userNameController,
+          controller: _fullNameController,
           decoration: InputDecoration(
             filled: true,
-            hintText: 'alok saepudin',
+            hintText: 'example: alok saepudin',
             hintStyle: const TextStyle(
               color: Color(0xff6A6A6A),
               fontWeight: FontWeight.normal,
@@ -112,7 +112,7 @@ Widget _userName() {
           controller: _emailController,
           decoration: InputDecoration(
             filled: true,
-            hintText: 'alok123@gmail.com',
+            hintText: 'example: alok@gmail.com',
             hintStyle: const TextStyle(
               color: Color(0xff6A6A6A),
               fontWeight: FontWeight.normal,
@@ -173,7 +173,7 @@ Widget _userName() {
       ),
       onPressed: () async {
        await AuthService().signup(
-          userName: _userNameController.text,
+          userName: _fullNameController.text,
           email: _emailController.text,
           password: _passwordController.text,
           context: context

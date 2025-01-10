@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'view/home_view.dart';
 import 'view/add_post_view.dart';
 import 'view/profile_view.dart';
-import 'view/message_view.dart';
 
 import '../../services/firebase/post_service.dart';
 

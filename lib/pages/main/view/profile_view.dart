@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:cloudinary_flutter/image/cld_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,11 +14,15 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   String profilePictureUrl = '';
+  String fullName = '';
+  String dateOfBirth = '';
+  String gender = '';
 
   @override
   void initState() {
     super.initState();
     _loadProfilePicture();
+    _loadUserProfile();
   }
 
   Future<void> _loadProfilePicture() async {
@@ -28,6 +31,17 @@ class _ProfileViewState extends State<ProfileView> {
         await FirebaseFirestore.instance.collection('users').doc(userId).get();
     setState(() {
       profilePictureUrl = userDoc['profile_picture'];
+    });
+  }
+
+  Future<void> _loadUserProfile() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    setState(() {
+      fullName = userDoc['full_name'];
+      dateOfBirth = userDoc['date_of_birth'];
+      gender = userDoc['gender'];
     });
   }
 
@@ -50,6 +64,27 @@ class _ProfileViewState extends State<ProfileView> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 20)),
+        ),
+        ListTile(
+          title: Text('Full Name: $fullName'),
+          trailing: Icon(Icons.edit),
+          onTap: () {
+            // Navigate to edit full name screen
+          },
+        ),
+        ListTile(
+          title: Text('Date of Birth: $dateOfBirth'),
+          trailing: Icon(Icons.edit),
+          onTap: () {
+            // Navigate to edit date of birth screen
+          },
+        ),
+        ListTile(
+          title: Text('Gender: $gender'),
+          trailing: Icon(Icons.edit),
+          onTap: () {
+            // Navigate to edit gender screen
+          },
         ),
         ElevatedButton(
           onPressed: () async {
